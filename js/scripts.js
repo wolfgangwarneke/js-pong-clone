@@ -3,6 +3,7 @@ var canvasContext;
 var firstBall;
 var playerOne;
 var mouse = { x: 0, y: 0 };
+var prevMouse = { x: 0, y: 0};
 function Ball(xPos, yPos, width, color) {
     this.xPos = xPos;
     this.yPos = yPos;
@@ -30,9 +31,19 @@ function Player(color) {
     this.draw = function() {
       colorRect(this.xPos,this.yPos,this.width,this.height,this.color);
     };
-    this.move = function(x, y) {
-      this.xPos += x;
-      this.yPos += y;
+    this.move = function(mouseYPos) {
+      //console.log(mouse.y, prevMouse.y, this.yPos);
+      // playerFloorY = Math.floor(this.yPos);
+      // mouseFloorY = Math.floor(mouseYPos);
+      var absDiff = Math.abs(this.yPos - mouseYPos);
+      if (this.yPos !== mouseYPos) {
+        if (this.yPos > mouseYPos) {
+          this.yPos -= absDiff<8 ? absDiff/2 : 8;
+        } else if (this.yPos < mouseYPos) {
+          this.yPos += absDiff<8 ? absDiff/2 : 8;
+        }
+      }
+
     }
 }
 
@@ -41,7 +52,6 @@ function setMousePosition(evt) {
   var root = document.documentElement;
   mouse.x = evt.clientX - rect.left - root.scrollLeft;
   mouse.y = evt.clientY - rect.top - root.scrollTop;
-  console.log(mouse);
 }
 
 window.onload = function() {
@@ -53,7 +63,8 @@ window.onload = function() {
   setInterval(update, 1000/framesPerSecond);
   canvas.addEventListener('mousemove',
     function(evt) {
-      var mousePos = setMousePosition(evt);
+      prevMouse = mouse;
+      setMousePosition(evt);
     }
   );
 }
@@ -65,6 +76,7 @@ function update() {
 
 function moveEverything() {
   firstBall.move();
+  playerOne.move(mouse.y);
 }
 
 function drawEverything() {
