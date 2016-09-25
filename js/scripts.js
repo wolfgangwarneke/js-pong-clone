@@ -4,11 +4,16 @@ var firstBall;
 var playerOne;
 var mouse = { x: 0, y: 0 };
 var prevMouse = { x: 0, y: 0};
+
+var playerScore = 0;
+var opponentScore = 0;
+const WIN_CONDITION = 5;
+
 function Ball(xPos, yPos, width, color) {
     this.xPos = xPos;
     this.yPos = yPos;
-    this.xVelocity = 5;
-    this.yVelocity = 5;
+    this.xVelocity = 10;
+    this.yVelocity = 10;
     this.width = width;
     this.radius = function() { return this.width / 2 }
     this.color = color;
@@ -19,6 +24,11 @@ function Ball(xPos, yPos, width, color) {
       this.xPos += this.xVelocity;
       this.yPos += this.yVelocity;
       if (firstBall.xPos > canvas.width + this.radius() || firstBall.xPos < 0 - this.radius()) {
+        if (this.xVelocity < 0) {
+          playerScore ++;
+        } else {
+          opponentScore ++;
+        }
         this.xVelocity *= -1;
         this.reset();
       }
@@ -27,13 +37,17 @@ function Ball(xPos, yPos, width, color) {
     this.reset = function() {
       this.xPos = canvas.width/2;
       this.yPos = Math.floor(Math.random() * (canvas.height - this.width) + this.width);
+      if(playerScore >= WIN_CONDITION || opponentScore >= WIN_CONDITION) {
+        playerScore = 0;
+        opponentScore = 0;
+      }
     }
 }
 function Player(color) {
     this.xPos = 0;
     this.yPos = 0;
     this.width = 20;
-    this.height = 200;
+    this.height = 100;
     this.color = color;
     this.draw = function() {
       colorRect(this.xPos,this.yPos-this.height/2,this.width,this.height,this.color);
@@ -93,6 +107,8 @@ function drawEverything() {
   firstBall.draw();
   playerOne.draw();
   opponentOne.draw();
+  canvasContext.fillText("Player score: " + playerScore, 100, 30);
+  canvasContext.fillText("Opponent score: " + opponentScore, canvas.width - 200, 30);
 }
 
 function paddleCheck(player, ball, playerScreenSide) {
@@ -100,13 +116,15 @@ function paddleCheck(player, ball, playerScreenSide) {
   if(playerScreenSide === "right") offset *= -1;
   if (player.xPos + offset === Math.abs(ball.xPos - ball.radius()) && player.yPos - player.height/2 < ball.yPos && player.yPos + player.height/2 > ball.yPos) {
     ball.xVelocity *= -1;
+    var deltaY = ball.yPos - (player.yPos);
+    ball.yVelocity = deltaY * 0.35;
   }
 }
 
 function computerMovement(computerPlayer, ball) {
-  if(computerPlayer.yPos < ball.yPos) {
+  if(computerPlayer.yPos < ball.yPos - 35) {
     computerPlayer.yPos += 6;
-  } else {
+  } else if (computerPlayer.yPos > ball.yPos + 35) {
     computerPlayer.yPos -= 6;
   }
 }
