@@ -26,7 +26,7 @@ function Ball(xPos, yPos, width, color) {
     };
     this.reset = function() {
       this.xPos = canvas.width/2;
-      this.yPos = canvas.height/2;
+      this.yPos = Math.floor(Math.random() * (canvas.height - this.width) + this.width);
     }
 }
 function Player(color) {
@@ -63,6 +63,8 @@ window.onload = function() {
   canvasContext = canvas.getContext('2d');
   firstBall = new Ball(50,50,20,"yellow");
   playerOne = new Player("orange");
+  opponentOne = new Player("#ffcc33");
+  opponentOne.xPos = canvas.width - opponentOne.width;
   var framesPerSecond = 30;
   setInterval(update, 1000/framesPerSecond);
   canvas.addEventListener('mousemove',
@@ -82,19 +84,21 @@ function moveEverything() {
   firstBall.move();
   playerOne.move(mouse.y);
   paddleCheck(playerOne, firstBall);
+  paddleCheck(opponentOne, firstBall, "right");
 }
 
 function drawEverything() {
   colorRect(0,0,canvas.width,canvas.height,"blue");
   firstBall.draw();
   playerOne.draw();
+  opponentOne.draw();
 }
 
-function paddleCheck(player, ball) {
-  if (player.xPos + player.width/2 === Math.abs(ball.xPos - ball.radius()) && player.yPos - player.height/2 < ball.yPos && player.yPos + player.height/2 > ball.yPos) {
-    console.log('tight');
+function paddleCheck(player, ball, playerScreenSide) {
+  var offset = player.width/2;
+  if(playerScreenSide === "right") offset *= -1;
+  if (player.xPos + offset === Math.abs(ball.xPos - ball.radius()) && player.yPos - player.height/2 < ball.yPos && player.yPos + player.height/2 > ball.yPos) {
     ball.xVelocity *= -1;
-    ball.yVelocity *= -1;
   }
 }
 
