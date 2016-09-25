@@ -2,22 +2,23 @@ var canvas;
 var canvasContext;
 var firstBall;
 var playerOne;
+var mouse = { x: 0, y: 0 };
 function Ball(xPos, yPos, width, color) {
     this.xPos = xPos;
     this.yPos = yPos;
     this.xVelocity = 5;
     this.yVelocity = 5;
     this.width = width;
+    this.radius = function() { return this.width / 2 }
     this.color = color;
     this.draw = function() {
-      canvasContext.fillStyle = this.color;
-      canvasContext.fillRect(this.xPos,this.yPos,this.width,this.width);
+      colorCircle(this.xPos, this.yPos, this.radius(), this.color);
     };
     this.move = function() {
       this.xPos += this.xVelocity;
       this.yPos += this.yVelocity;
-      if (firstBall.xPos > 800 - this.width || firstBall.xPos < 0) this.xVelocity *= -1;
-      if (firstBall.yPos > 600 - this.width || firstBall.yPos < 0) this.yVelocity *= -1;
+      if (firstBall.xPos > canvas.width - this.radius() || firstBall.xPos < 0 + this.radius()) this.xVelocity *= -1;
+      if (firstBall.yPos > canvas.height - this.radius() || firstBall.yPos < 0 + this.radius()) this.yVelocity *= -1;
     }
 }
 function Player(color) {
@@ -27,13 +28,20 @@ function Player(color) {
     this.height = 200;
     this.color = color;
     this.draw = function() {
-      canvasContext.fillStyle = this.color;
-      canvasContext.fillRect(this.xPos,this.yPos,this.width,this.height);
+      colorRect(this.xPos,this.yPos,this.width,this.height,this.color);
     };
     this.move = function(x, y) {
       this.xPos += x;
       this.yPos += y;
     }
+}
+
+function setMousePosition(evt) {
+  var rect = canvas.getBoundingClientRect();
+  var root = document.documentElement;
+  mouse.x = evt.clientX - rect.left - root.scrollLeft;
+  mouse.y = evt.clientY - rect.top - root.scrollTop;
+  console.log(mouse);
 }
 
 window.onload = function() {
@@ -43,6 +51,11 @@ window.onload = function() {
   playerOne = new Player("orange");
   var framesPerSecond = 30;
   setInterval(update, 1000/framesPerSecond);
+  canvas.addEventListener('mousemove',
+    function(evt) {
+      var mousePos = setMousePosition(evt);
+    }
+  );
 }
 
 function update() {
@@ -55,8 +68,22 @@ function moveEverything() {
 }
 
 function drawEverything() {
-  canvasContext.fillStyle = "blue";
-  canvasContext.fillRect(0,0,canvas.width,canvas.height);
+  colorRect(0,0,canvas.width,canvas.height,"blue");
+  // canvasContext.fillStyle = "blue";
+  // canvasContext.fillRect(0,0,canvas.width,canvas.height);
   firstBall.draw();
   playerOne.draw();
+}
+
+
+function colorRect(leftX, topY, width, height, color) {
+  canvasContext.fillStyle = color;
+  canvasContext.fillRect(leftX,topY,width,height);
+}
+
+function colorCircle(centerX, centerY, radius, color) {
+  canvasContext.fillStyle = color;
+  canvasContext.beginPath();
+  canvasContext.arc(centerX, centerY, radius, 0, Math.PI*2, true);
+  canvasContext.fill();
 }
