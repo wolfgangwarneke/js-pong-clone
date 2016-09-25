@@ -122,18 +122,22 @@ function moveEverything() {
 
 function drawEverything() {
   if (!playingGame) {
-    canvasContext.fillStyle = "#fcc";
+    canvasContext.fillStyle = "#ff5";
+    canvasContext.font="24px Tahoma, Geneva, sans-serif";
     var message = winning ? "Hey looks like you won!" : "The computer guy one I guess"
     canvasContext.fillText(message, 100, 100);
-    canvasContext.fillText("Click to continue", canvas.width/2, canvas.height/2);
+    canvasContext.fillStyle = "#fcc";
+    canvasContext.font="20px Georgia";
+    canvasContext.fillText("Click to continue", canvas.width/2 - 68, canvas.height/2);
     return;
   };
   drawMap();
   firstBall.draw();
   playerOne.draw();
   opponentOne.draw();
-  canvasContext.fillText("Player score: " + playerScore, 100, 30);
-  canvasContext.fillText("Opponent score: " + opponentScore, canvas.width - 200, 30);
+  canvasContext.font='18px "Lucida Console", Monaco, monospace';
+  canvasContext.fillText("Player score: " + playerScore, 50, 30);
+  canvasContext.fillText("Opponent score: " + opponentScore, canvas.width - 230, 30);
 }
 
 function paddleCheck(player, ball, playerScreenSide) {

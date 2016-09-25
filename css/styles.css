@@ -1,9 +1,12 @@
 body {
   font-family: cursive;
+  background-color: #292929;
+  color: #ffd;
 }
 
 h1 {
-  margin-left: 10%;
+  margin-left: 7%;
+  padding-bottom: 15px;
 }
 
 canvas {
