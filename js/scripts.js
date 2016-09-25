@@ -7,7 +7,7 @@ var prevMouse = { x: 0, y: 0};
 function Ball(xPos, yPos, width, color) {
     this.xPos = xPos;
     this.yPos = yPos;
-    this.xVelocity = 5;
+    this.xVelocity = 1;
     this.yVelocity = 5;
     this.width = width;
     this.radius = function() { return this.width / 2 }
@@ -18,8 +18,15 @@ function Ball(xPos, yPos, width, color) {
     this.move = function() {
       this.xPos += this.xVelocity;
       this.yPos += this.yVelocity;
-      if (firstBall.xPos > canvas.width - this.radius() || firstBall.xPos < 0 + this.radius()) this.xVelocity *= -1;
+      if (firstBall.xPos > canvas.width + this.radius() || firstBall.xPos < 0 - this.radius()) {
+        this.xVelocity *= -1;
+        this.reset();
+      }
       if (firstBall.yPos > canvas.height - this.radius() || firstBall.yPos < 0 + this.radius()) this.yVelocity *= -1;
+    };
+    this.reset = function() {
+      this.xPos = canvas.width/2;
+      this.yPos = canvas.height/2;
     }
 }
 function Player(color) {
