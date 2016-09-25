@@ -40,6 +40,7 @@ function Ball(xPos, yPos, width, color) {
     this.reset = function() {
       this.xPos = canvas.width/2;
       this.yPos = Math.floor(Math.random() * (canvas.height - this.width) + this.width);
+      this.yVelocity = Math.floor(Math.random() * 10 + 1)
       if(playerScore >= WIN_CONDITION || opponentScore >= WIN_CONDITION) {
         winning = playerScore > opponentScore ? true: false;
         playingGame = false;
