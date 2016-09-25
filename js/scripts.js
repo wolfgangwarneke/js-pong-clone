@@ -7,7 +7,10 @@ var prevMouse = { x: 0, y: 0};
 
 var playerScore = 0;
 var opponentScore = 0;
+var winning;
 const WIN_CONDITION = 5;
+
+var playingGame = true;
 
 function Ball(xPos, yPos, width, color) {
     this.xPos = xPos;
@@ -24,7 +27,7 @@ function Ball(xPos, yPos, width, color) {
       this.xPos += this.xVelocity;
       this.yPos += this.yVelocity;
       if (firstBall.xPos > canvas.width + this.radius() || firstBall.xPos < 0 - this.radius()) {
-        if (this.xVelocity < 0) {
+        if (this.xVelocity > 0) {
           playerScore ++;
         } else {
           opponentScore ++;
@@ -38,8 +41,8 @@ function Ball(xPos, yPos, width, color) {
       this.xPos = canvas.width/2;
       this.yPos = Math.floor(Math.random() * (canvas.height - this.width) + this.width);
       if(playerScore >= WIN_CONDITION || opponentScore >= WIN_CONDITION) {
-        playerScore = 0;
-        opponentScore = 0;
+        winning = playerScore > opponentScore ? true: false;
+        playingGame = false;
       }
     }
 }
@@ -72,15 +75,26 @@ function setMousePosition(evt) {
   mouse.y = evt.clientY - rect.top - root.scrollTop;
 }
 
+function clickContinue(evt) {
+  if(!playingGame) {
+    playerScore = 0;
+    opponentScore = 0;
+    playingGame = true;
+  }
+}
+
 window.onload = function() {
   canvas = document.getElementById('canvas');
   canvasContext = canvas.getContext('2d');
   firstBall = new Ball(50,50,20,"yellow");
   playerOne = new Player("orange");
-  opponentOne = new Player("#ffcc33");
+  opponentOne = new Player("red");
   opponentOne.xPos = canvas.width - opponentOne.width;
   var framesPerSecond = 30;
   setInterval(update, 1000/framesPerSecond);
+
+  canvas.addEventListener('mousedown', clickContinue);
+
   canvas.addEventListener('mousemove',
     function(evt) {
       prevMouse = mouse;
@@ -95,6 +109,9 @@ function update() {
 }
 
 function moveEverything() {
+  if (!playingGame) {
+    return;
+  }
   firstBall.move();
   playerOne.move(mouse.y);
   computerMovement(opponentOne, firstBall);
@@ -103,7 +120,14 @@ function moveEverything() {
 }
 
 function drawEverything() {
-  colorRect(0,0,canvas.width,canvas.height,"blue");
+  if (!playingGame) {
+    canvasContext.fillStyle = "#fcc";
+    var message = winning ? "Hey looks like you won!" : "The computer guy one I guess"
+    canvasContext.fillText(message, 100, 100);
+    canvasContext.fillText("Click to continue", canvas.width/2, canvas.height/2);
+    return;
+  };
+  drawMap();
   firstBall.draw();
   playerOne.draw();
   opponentOne.draw();
@@ -139,4 +163,11 @@ function colorCircle(centerX, centerY, radius, color) {
   canvasContext.beginPath();
   canvasContext.arc(centerX, centerY, radius, 0, Math.PI*2, true);
   canvasContext.fill();
+}
+
+function drawMap() {
+  colorRect(0,0,canvas.width,canvas.height,"blue");
+  for (var i = 0; i < canvas.height; i += 40) {
+    colorRect(canvas.width/2 -1, i, 2, 20, "navy");
+  }
 }
