@@ -83,6 +83,7 @@ function update() {
 function moveEverything() {
   firstBall.move();
   playerOne.move(mouse.y);
+  computerMovement(opponentOne, firstBall);
   paddleCheck(playerOne, firstBall);
   paddleCheck(opponentOne, firstBall, "right");
 }
@@ -99,6 +100,14 @@ function paddleCheck(player, ball, playerScreenSide) {
   if(playerScreenSide === "right") offset *= -1;
   if (player.xPos + offset === Math.abs(ball.xPos - ball.radius()) && player.yPos - player.height/2 < ball.yPos && player.yPos + player.height/2 > ball.yPos) {
     ball.xVelocity *= -1;
+  }
+}
+
+function computerMovement(computerPlayer, ball) {
+  if(computerPlayer.yPos < ball.yPos) {
+    computerPlayer.yPos += 6;
+  } else {
+    computerPlayer.yPos -= 6;
   }
 }
 
