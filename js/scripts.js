@@ -39,9 +39,6 @@ function Player(color) {
       colorRect(this.xPos,this.yPos-this.height/2,this.width,this.height,this.color);
     };
     this.move = function(mouseYPos) {
-      //console.log(mouse.y, prevMouse.y, this.yPos);
-      // playerFloorY = Math.floor(this.yPos);
-      // mouseFloorY = Math.floor(mouseYPos);
       var absDiff = Math.abs(this.yPos - mouseYPos);
       if (this.yPos !== mouseYPos) {
         if (this.yPos > mouseYPos) {
@@ -88,8 +85,6 @@ function moveEverything() {
 
 function drawEverything() {
   colorRect(0,0,canvas.width,canvas.height,"blue");
-  // canvasContext.fillStyle = "blue";
-  // canvasContext.fillRect(0,0,canvas.width,canvas.height);
   firstBall.draw();
   playerOne.draw();
 }
