@@ -29,7 +29,7 @@ function Player(color) {
     this.height = 200;
     this.color = color;
     this.draw = function() {
-      colorRect(this.xPos,this.yPos,this.width,this.height,this.color);
+      colorRect(this.xPos,this.yPos-this.height/2,this.width,this.height,this.color);
     };
     this.move = function(mouseYPos) {
       //console.log(mouse.y, prevMouse.y, this.yPos);
