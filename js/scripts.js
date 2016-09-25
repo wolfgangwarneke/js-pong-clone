@@ -7,7 +7,7 @@ var prevMouse = { x: 0, y: 0};
 function Ball(xPos, yPos, width, color) {
     this.xPos = xPos;
     this.yPos = yPos;
-    this.xVelocity = 1;
+    this.xVelocity = 5;
     this.yVelocity = 5;
     this.width = width;
     this.radius = function() { return this.width / 2 }
@@ -81,6 +81,7 @@ function update() {
 function moveEverything() {
   firstBall.move();
   playerOne.move(mouse.y);
+  paddleCheck(playerOne, firstBall);
 }
 
 function drawEverything() {
@@ -89,6 +90,13 @@ function drawEverything() {
   playerOne.draw();
 }
 
+function paddleCheck(player, ball) {
+  if (player.xPos + player.width/2 === Math.abs(ball.xPos - ball.radius()) && player.yPos - player.height/2 < ball.yPos && player.yPos + player.height/2 > ball.yPos) {
+    console.log('tight');
+    ball.xVelocity *= -1;
+    ball.yVelocity *= -1;
+  }
+}
 
 function colorRect(leftX, topY, width, height, color) {
   canvasContext.fillStyle = color;
